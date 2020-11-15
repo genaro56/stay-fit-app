@@ -21,7 +21,7 @@ function Footer({ color = '#1c2237', leagueId = '/empty'}) {
       <div className='footer-links'>
         <div className='footer-link-wrapper'>
           <div className='footer-link-items'>
-            <h3>Alpha</h3>
+            <h3>Stay-fit</h3>
             <Link to='/create-league'>Crea tu liga</Link>
             <Link to={`/${leagueId}/signup`}>Inscribe a tu equipo</Link>
           </div>
@@ -46,10 +46,10 @@ function Footer({ color = '#1c2237', leagueId = '/empty'}) {
           <div className='footer-logo'>
             <Link to='/' className='social-logo'>
               <FaAutoprefixer className='navbar-icon' />
-              AlpHa
+              Stay-fit
             </Link>
           </div>
-          <small className='website-rights'>AlpHa © 2020</small>
+          <small className='website-rights'>Stay-fit © 2020</small>
         </div>
       </section>
     </div>

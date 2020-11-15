@@ -2,10 +2,11 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { useCurrentUser } from './components/auth/CurrentUser';
-import { Alert, Navbar, Media } from 'react-bootstrap';
+import { Alert, Media } from 'react-bootstrap';
 import SignIn from './components/auth/SignIn';
 import Footer from './components/footer/Footer';
 import NoAuthNavbar from './components/navbar/NoAuthNavbar';
+import Navbar from './components/navbar/Navbar';
 import InitialAssessment from './components/assessment/InitialAssessment';
 import MainDashboard from './components/dashboard/MainDashboard';
 
@@ -17,13 +18,12 @@ function App() {
       <Switch>
         {!user &&
           <>
-            <Redirect to="/sigin" />
+            <Redirect to="/signin" />
             <NoAuthNavbar />
             <Switch>
               {/* Pantallas que ven los usuarios sin auth */}
-              <Route exact path="/sigin" component={SignIn} />
+              <Route exact path="/signin" component={SignIn} />
             </Switch>
-            <Footer />
           </>
         }
         {
@@ -32,13 +32,15 @@ function App() {
             * van a crear su liga o por que van a inscribir a su equipo
             */
           user &&
-          <Switch>
+          <>
+            <Redirect to="/" />
             <Navbar />
             <Route exact path="/initial-assessment" component={InitialAssessment} />
-            <Route exact path="/dashboard" component={MainDashboard} />
+            <Route exact path="/" component={MainDashboard} />
             {/* <Route exact path="/profile" component={Profile} />
             <Route exact path="/about" component={AboutUs} /> */}
-          </Switch>
+            <Footer />
+          </>
         }
       </Switch>
     </Router>
