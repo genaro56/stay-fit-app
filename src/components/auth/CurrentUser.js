@@ -14,8 +14,9 @@ export function useCurrentUser() {
           .get()
           .then((ref) => {
             const data = ref.data()
-            memoedUser = { uid: user.uid, ...data }
-            setCurrentUser({ uid: user.uid, ...data })
+            console.log('%c data', 'background: #332167; color: #B3D1F6; font-size: 16px', data)
+            memoedUser = { ...user, ...data }
+            setCurrentUser({ ...user, ...data })
           })
       } else {
         memoedUser = null

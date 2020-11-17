@@ -9,6 +9,8 @@ import NoAuthNavbar from './components/navbar/NoAuthNavbar';
 import Navbar from './components/navbar/Navbar';
 import InitialAssessment from './components/assessment/InitialAssessment';
 import MainDashboard from './components/dashboard/MainDashboard';
+import ActivityView from './components/activity/ActivityView';
+import ActivitiesList from './components/catalog/ActivitiesList';
 
 function App() {
   const user = useCurrentUser()
@@ -18,11 +20,10 @@ function App() {
       <Switch>
         {!user &&
           <>
-            <Redirect to="/signin" />
             <NoAuthNavbar />
             <Switch>
               {/* Pantallas que ven los usuarios sin auth */}
-              <Route exact path="/signin" component={SignIn} />
+              <Route exact path="/" component={SignIn} />
             </Switch>
           </>
         }
@@ -33,13 +34,16 @@ function App() {
             */
           user &&
           <>
-            <Redirect to="/" />
             <Navbar />
             <Route exact path="/initial-assessment" component={InitialAssessment} />
             <Route exact path="/" component={MainDashboard} />
+            <Route exact path="/:activityId/activity" component={ActivityView} />
+            <Route exact path="/:categoryName/category" component={ActivitiesList} />
+
+
             {/* <Route exact path="/profile" component={Profile} />
             <Route exact path="/about" component={AboutUs} /> */}
-            <Footer />
+            {/* <Footer /> */}
           </>
         }
       </Switch>
