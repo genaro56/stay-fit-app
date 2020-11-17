@@ -1,0 +1,21 @@
+.container {
+  background-image: url("https://ak.picdn.net/shutterstock/videos/25754996/preview/stock-footage-young-bodybuilder-training-in-a-gym-dramatic-black-and-white-footage.webm");
+}
+
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+
+/* Add some content at the bottom of the video/page */
+.contentBlock {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.5);
+  color: #f1f1f1;
+  width: 100%;
+  padding: 20px;
+}

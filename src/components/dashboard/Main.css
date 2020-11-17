@@ -1,0 +1,33 @@
+.light-bg {
+  background-color: #fff;
+}
+
+.dark-bg {
+  background-color: #1c2237;
+}
+
+.section {
+  padding: 50px 100px 100px 0px;
+}
+
+.section-row {
+  align-items: center;
+}
+
+.row {
+  /* display: flex;
+  margin-right: -15px;
+  margin-bottom: -15px;
+  margin-left: -15px;
+  flex-wrap: wrap;
+  align-content: stretch; */
+}
+
+.col {
+  /* margin-bottom: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  flex: 1;
+  max-width: 50%;
+  flex-basis: 50%; */
+}

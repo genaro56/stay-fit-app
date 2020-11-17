@@ -3,7 +3,8 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase'
 import { auth } from '../../firebase';
 import { Redirect } from 'react-router-dom';
-
+import VideoUrl from '../../images/trainee.mp4'
+import './Signin.css'
 class SignIn extends React.Component {
 
   state = {
@@ -38,21 +39,25 @@ class SignIn extends React.Component {
   render() {
     if (!this.state.isSignedIn) {
       return (
-        <div className="container">
-          <div className="d-flex justify-content-center h-100">
-            <div className="card">
-              <div className="card-header">
-                <h3>Sign In</h3>
-                <div className="d-flex justify-content-end social_icon">
-                  <span><i className="fab fa-facebook-square"></i></span>
-                  <span><i className="fab fa-google-plus-square"></i></span>
-                  <span><i className="fab fa-twitter-square"></i></span>
+        <>
+          <div className="container contentBlock">
+          <video autoPlay muted loop id="myVideo">
+            <source src={VideoUrl} type="video/mp4" />
+          </video>
+            <div className="d-flex justify-content-center h-100" style={{ height: '100vh'}}>
+              <div className="card">
+                <div className="card-header">
+                  <div className="d-flex justify-content-end social_icon">
+                    <span><i className="fab fa-facebook-square"></i></span>
+                    <span><i className="fab fa-google-plus-square"></i></span>
+                    <span><i className="fab fa-twitter-square"></i></span>
+                  </div>
                 </div>
+                <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} />
               </div>
-              <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} />
             </div>
           </div>
-        </div>
+        </>
       );
     }
 
