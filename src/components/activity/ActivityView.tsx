@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { Component, useEffect } from 'react';
 import { Row, Col, Card, Spinner, Container, Button, Modal, Form } from 'react-bootstrap';
 import { CollectionDataHook, DocumentDataHook, useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
+import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { ActivitiesCollection } from '../../firestoreCollections';
@@ -18,9 +19,11 @@ const ActivityView = () => {
   const { activityId }: any = useParams();
   const [data, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
   const [showModal, setShowModal] = React.useState(false);
+  const {register, errors, handleSubmit} = useForm()
   const handleClose = () => setShowModal(false);
   const handleAddActivity = () => {
-    alert('adding activity...')
+    alert('adding activity to weekly routine...')
+
   };
   return (
     <Container>
@@ -79,10 +82,10 @@ const ActivityView = () => {
           <Modal.Title>Which day would you like to add to?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
+          <Form onSubmit={handleSubmit(handleAddActivity)}>
             <Form.Group>
               <Form.Label>Day:</Form.Label>
-              <Form.Control value={Date()} type="date" />
+              <Form.Control ref={register({ required: true })} value={Date()} type="date" />
             </Form.Group>
           </Form>
         </Modal.Body>
