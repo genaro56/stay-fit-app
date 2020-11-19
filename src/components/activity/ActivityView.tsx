@@ -1,4 +1,3 @@
-import moment from 'moment';
 import React, { Component, useEffect, useState } from 'react';
 import { Row, Col, Card, Spinner, Container, Button, Modal, Form, Alert } from 'react-bootstrap';
 import { CollectionDataHook, DocumentDataHook, useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
@@ -20,24 +19,57 @@ function formIsValid(errors: any) {
   return Object.entries(errors).length === 0
 }
 
+function restrictDate(){
+  var dtToday = new Date();
+  
+  var month = dtToday.getMonth() + 1 as any;
+  var day = dtToday.getDate() as any;
+  var year = dtToday.getFullYear();
+  if(month < 10)
+      month = '0' + month.toString();
+  if(day < 10)
+      day = '0' + day.toString();
+  return  year + '-' + month + '-' + day;
+}
+
+const calculateDate = (date: Date) => {
+  const newDate = new Date(date);
+  newDate.setHours(0); newDate.setMinutes(0); newDate.setSeconds(0); newDate.setMilliseconds(0);
+  return newDate
+}
+
 const ActivityView = () => {
   const { activityId }: any = useParams();
   const user = useCurrentUser();
   const [data, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
-  const [weeklyRoutineData = {}, loadingRoutine, errorRoutine]: DocumentDataHook<any> = useDocumentData(WeeklyRoutinesCollection.doc(user?.routineId))
+  const [weeklyRoutineData, loadingRoutine, errorRoutine]: DocumentDataHook<any> = useDocumentData(WeeklyRoutinesCollection.doc(user?.routineId))
   const [showModal, setShowModal] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [dateValue, setDateValue] = useState('');
 
   const handleClose = () => setShowModal(false);
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, getValues, setValue } = useForm({
+    defaultValues: {
+      date: new Date().toDateString(),
+    }
+  })
 
-  async function handleAddActivity({ date: selectedDate }: { date: Date }) {
-    const isDatePicked = !!(weeklyRoutineData.activities.find((activity: any) => activity.date === selectedDate))
-
-    if (!isDatePicked) {
-      const activities = weeklyRoutineData.activities;
-      activities.push({
-        date: selectedDate,
+  async function handleAddActivity({ date: selectedDate }: { date: any }) {
+    
+    const formatDate = calculateDate(new Date(selectedDate));
+    const indexOfDate = weeklyRoutineData?.activities.findIndex((activity: any) => {
+      console.log('%c calculateDate', 'background: #332167; color: #B3D1F6; font-size: 16px', activity.date.toDate())
+      console.log('%c calculateDate(activity.date.toDate())', 'background: #332167; color: #B3D1F6; font-size: 16px', calculateDate(activity.date.toDate()))
+      console.log('%c formatDate', 'background: #332167; color: #B3D1F6; font-size: 16px', formatDate)
+      console.log('%c activity.date === formatDate', 'background: #332167; color: #B3D1F6; font-size: 16px', calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString())
+      return calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString()
+    })
+    const isDatePicked = (indexOfDate !== -1)
+    console.log('%c isDatePicked', 'background: #332167; color: #B3D1F6; font-size: 16px', isDatePicked)
+    if (!isDatePicked && weeklyRoutineData) {
+      const activities = weeklyRoutineData?.activities;
+      activities?.push({
+        date: formatDate,
         activityId
       });
 
@@ -75,6 +107,7 @@ const ActivityView = () => {
                   </div>
                 : (
                   <>
+                    {success && <Alert variant="success">Rutina agregada con éxito</Alert>}
                     <Card.Header>
                       {data?.name}
                     </Card.Header>
@@ -116,7 +149,16 @@ const ActivityView = () => {
           <Modal.Body>
             <Form.Group>
               <Form.Label>Day:</Form.Label>
-              <Form.Control ref={register({ required: true })} name="" value={Date()} type="date" />
+              <Form.Control
+                ref={register({
+                  required: true
+                })}
+                onChange={(e: any) => setDateValue(e.target.value)}
+                name="date"
+                min={restrictDate()}
+                value={dateValue}
+                type="date"
+              />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
@@ -129,7 +171,6 @@ const ActivityView = () => {
           </Modal.Footer>
         </Form>
       </Modal>
-      {success && <Alert variant="success">Rutina agregada con éxito</Alert>}
     </Container>
   );
 }
