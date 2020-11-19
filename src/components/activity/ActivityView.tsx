@@ -1,10 +1,12 @@
 import moment from 'moment';
-import React, { Component, useEffect } from 'react';
-import { Row, Col, Card, Spinner, Container, Button, Modal, Form } from 'react-bootstrap';
+import React, { Component, useEffect, useState } from 'react';
+import { Row, Col, Card, Spinner, Container, Button, Modal, Form, Alert } from 'react-bootstrap';
 import { CollectionDataHook, DocumentDataHook, useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
+import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { ActivitiesCollection } from '../../firestoreCollections';
+import { ActivitiesCollection, WeeklyRoutinesCollection } from '../../firestoreCollections';
+import { useCurrentUser } from '../auth/CurrentUser';
 import './Activity.css';
 
 interface IActivity {
@@ -14,20 +16,52 @@ interface IActivity {
   likes: number,
 }
 
+function formIsValid(errors: any) {
+  return Object.entries(errors).length === 0
+}
+
 const ActivityView = () => {
   const { activityId }: any = useParams();
+  const user = useCurrentUser();
   const [data, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
-  const [showModal, setShowModal] = React.useState(false);
+  const [weeklyRoutineData = {}, loadingRoutine, errorRoutine]: DocumentDataHook<any> = useDocumentData(WeeklyRoutinesCollection.doc(user?.routineId))
+  const [showModal, setShowModal] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   const handleClose = () => setShowModal(false);
-  const handleAddActivity = () => {
-    alert('adding activity...')
-  };
+  const { register, handleSubmit } = useForm()
+
+  async function handleAddActivity({ date: selectedDate }: { date: Date }) {
+    const isDatePicked = !!(weeklyRoutineData.activities.find((activity: any) => activity.date === selectedDate))
+
+    if (!isDatePicked) {
+      const activities = weeklyRoutineData.activities;
+      activities.push({
+        date: selectedDate,
+        activityId
+      });
+
+      WeeklyRoutinesCollection.doc(user?.routineId).update({
+        activities
+      }).then((res) => {
+        setSuccess(true)
+        setShowModal(false);
+      })
+        .catch(function (error: any) {
+          // The document probably doesn't exist.
+          alert("Error updating document: " + error);
+        });
+    } else {
+      alert("Cannot pick this date: date is already taken.")
+    }
+  }
+
   return (
     <Container>
       <Row className="section-row">
         <div className="section light-bg">
           <Col md={12}>
-            <Card style={{}}>
+            <Card>
               {loading ?
                 <div>
                   <Spinner
@@ -78,23 +112,24 @@ const ActivityView = () => {
         <Modal.Header closeButton>
           <Modal.Title>Which day would you like to add to?</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Form>
+        <Form onSubmit={handleSubmit(handleAddActivity)}>
+          <Modal.Body>
             <Form.Group>
               <Form.Label>Day:</Form.Label>
-              <Form.Control value={Date()} type="date" />
+              <Form.Control ref={register({ required: true })} name="" value={Date()} type="date" />
             </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
           </Button>
-          <Button variant="primary" onClick={() => handleAddActivity()}>
-            Save Changes
+            <Button variant="primary" type="submit">
+              Save Changes
           </Button>
-        </Modal.Footer>
+          </Modal.Footer>
+        </Form>
       </Modal>
+      {success && <Alert variant="success">Rutina agregada con éxito</Alert>}
     </Container>
   );
 }
