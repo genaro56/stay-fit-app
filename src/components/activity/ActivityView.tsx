@@ -58,10 +58,6 @@ const ActivityView = () => {
     
     const formatDate = calculateDate(new Date(selectedDate));
     const indexOfDate = weeklyRoutineData?.activities.findIndex((activity: any) => {
-      console.log('%c calculateDate', 'background: #332167; color: #B3D1F6; font-size: 16px', activity.date.toDate())
-      console.log('%c calculateDate(activity.date.toDate())', 'background: #332167; color: #B3D1F6; font-size: 16px', calculateDate(activity.date.toDate()))
-      console.log('%c formatDate', 'background: #332167; color: #B3D1F6; font-size: 16px', formatDate)
-      console.log('%c activity.date === formatDate', 'background: #332167; color: #B3D1F6; font-size: 16px', calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString())
       return calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString()
     })
     const isDatePicked = (indexOfDate !== -1)

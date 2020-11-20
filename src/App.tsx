@@ -12,6 +12,7 @@ import MainDashboard from './components/dashboard/MainDashboard';
 import ActivityView from './components/activity/ActivityView';
 import ActivitiesList from './components/catalog/ActivitiesList';
 import Profile from './views/ProfileView';
+import CatalogView from './components/catalog/CatalogView';
 
 function App() {
   const user = useCurrentUser()
@@ -39,8 +40,9 @@ function App() {
             <Route exact path="/initial-assessment" component={InitialAssessment} />
             <Route exact path="/" component={MainDashboard} />
             <Route exact path="/:activityId/activity" component={ActivityView} />
-            <Route exact path="/:categoryName/category" component={ActivitiesList} />
+            <Route exact path="/activity-list/:categoryId" component={ActivitiesList} />
             <Route exact path="/profile" component={Profile} />
+            <Route exact path="/catalog" component={CatalogView} />
             {/* <Route exact path="/about" component={AboutUs} /> */}
             <Footer />
           </>
