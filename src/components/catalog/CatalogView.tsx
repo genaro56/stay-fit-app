@@ -34,7 +34,7 @@ const CatalogView = () => {
           <Grid>
             {categories.map((cat: any) => (
               <Category
-                onClick={() => window.location.replace(`activity-list/${cat.id}`)}
+                onClick={() => window.location.replace(`/activity-list/${cat.id}`)}
                 id={cat.name}
                 className="category"
               >

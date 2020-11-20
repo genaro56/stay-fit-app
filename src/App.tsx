@@ -39,7 +39,7 @@ function App() {
             <Navbar />
             <Route exact path="/initial-assessment" component={InitialAssessment} />
             <Route exact path="/" component={MainDashboard} />
-            <Route exact path="/:activityId/activity" component={ActivityView} />
+            <Route exact path="/activity/:activityId" component={ActivityView} />
             <Route exact path="/activity-list/:categoryId" component={ActivitiesList} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/catalog" component={CatalogView} />
