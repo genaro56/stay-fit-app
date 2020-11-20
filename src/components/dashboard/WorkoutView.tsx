@@ -9,7 +9,6 @@ import { useCurrentUser } from '../auth/CurrentUser';
 const StyledWorkoutView = styled.div``;
 
 const WorkoutView = () => {
-  const user = useCurrentUser();
   const [data, loading, error]: any = useCollectionData(
     // WeeklyRoutinesCollection.where('userId', '==', user?.id)
     WeeklyRoutinesCollection.where('userId', '==', 'RxGlhvfXqVMySkZVjOip9SYVn443')
