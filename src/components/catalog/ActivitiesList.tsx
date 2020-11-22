@@ -4,6 +4,7 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { ActivitiesCollection } from '../../firestoreCollections';
+import DefaultImage from '../../images/placeholder.png';
 
 // UI
 
@@ -55,8 +56,13 @@ const ActivitiesList = () => {
         {activities.map((act: any) => (
           <Card onClick={() => window.location.replace(`/activity/${act.id}`)} className={classes.card}>
             <Card.Header>
-              <h2>{act.name}</h2>
-              <span>{act.description}</span>
+              <Col sm={2}>
+                <img alt="Activity preview" src={act.thumbnail || DefaultImage} />
+              </Col>
+              <Col sm={10}>
+                <h2>{act.name}</h2>
+                <span>{act.description}</span>
+              </Col>
             </Card.Header>
           </Card>
         ))}
