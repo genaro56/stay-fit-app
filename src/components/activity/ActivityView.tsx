@@ -1,5 +1,5 @@
 import React, { Component, useCallback, useEffect, useState } from 'react';
-import { Row, Col, Card, Spinner, Container, Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Row, Col, Card, Spinner, Modal, Form, Alert } from 'react-bootstrap';
 import { CollectionDataHook, DocumentDataHook, useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -7,6 +7,19 @@ import styled from 'styled-components';
 import { ActivitiesCollection, UserDataCollection, WeeklyRoutinesCollection } from '../../firestoreCollections';
 import { useCurrentUser } from '../auth/CurrentUser';
 import './Activity.css';
+
+// UI
+
+import { Container, makeStyles, Button, IconButton } from '@material-ui/core';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteEmptyIcon from '@material-ui/icons/FavoriteBorder';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    minHeight: '80vh',
+    padding: '32px 0'
+  },
+}))
 
 interface IActivity {
   video_url: string,
@@ -39,6 +52,8 @@ const calculateDate = (date: Date) => {
 }
 
 const ActivityView = () => {
+  const classes = useStyles()
+
   const { activityId }: any = useParams();
   const user = useCurrentUser();
   const [data, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
@@ -93,18 +108,29 @@ const ActivityView = () => {
     if (!loading && data) {
       try {
         ActivitiesCollection.doc(activityId).update({
-          likes: data?.likes + 1,
-        }).then(() => {
-          handleSuccess('Like sent.')
+          likes: isLikedBy ? data?.likes - 1 : data?.likes + 1,
         })
-        if (!isLikedBy) {
+        if (isLikedBy) {
+          var likedActivities = user.likedActivities || []
+          likedActivities = likedActivities.filter((act: any) => {
+            console.log("ACTIVITY ID", act, activityId)
+            return act !== activityId
+          })
+
+          console.log("ACTIVITIES", likedActivities)
+          UserDataCollection.doc(user.uid).update({
+            likedActivities
+          })
+          user.likedActivities = likedActivities
+        } else {
           const likedActivities = user.likedActivities || []
           likedActivities.push(activityId)
           UserDataCollection.doc(user.uid).update({
             likedActivities
           })
-          setIsLikedBy(true)
+          user.likedActivities = likedActivities
         }
+        setIsLikedBy(!isLikedBy)
       } catch (err) {
         alert("Error creating operation: " + error);
       }
@@ -113,13 +139,13 @@ const ActivityView = () => {
 
   useEffect(() => {
     if (!loading) {
-      const exists = !!(user.likedActivities.find((act: any) => act === activityId))
+      const exists = user.likedActivities && !!(user.likedActivities.find((act: any) => act === activityId))
       setIsLikedBy(exists)
     }
   }, [loading])
   console.log('%c isLikedBy', 'background: #332167; color: #B3D1F6; font-size: 16px', isLikedBy)
   return (
-    <Container>
+    <Container maxWidth="lg" component="main" className={classes.container}>
       <Row className="section-row">
         {/* <div className="section light-bg"> */}
         <Col md={12}>
@@ -143,7 +169,7 @@ const ActivityView = () => {
                   </Card.Header>
                   <Card.Body>
                     <iframe
-                      style={{ minHeight: '350px' }}
+                      style={{ minHeight: '550px' }}
                       title="Today's routine"
                       width="100%"
                       src={data?.video_url}
@@ -153,19 +179,20 @@ const ActivityView = () => {
                     />
                     <Row className="section-content" style={{ margin: '20px 0', display: 'flex', flex: '1 1 0' }}>
                       <Col
-                        // style={{ width: '80%' }}
                         sm={10}
                       >
                         <span>{data?.description}</span>
                       </Col>
-                      <Col sm={2}>
-                        <Row>
-                          <Button disabled={isLikedBy} onClick={handleLikeActivity} >{isLikedBy ? 'Liked ': 'Like this activity'}</Button>
-                          <div>{data?.likes}</div>
-                        </Row>
-                      </Col>
                     </Row>
-                    <Button onClick={() => setShowModal(true)}>Add to routine</Button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                      <Row style={{ alignItems: 'center', paddingLeft: 16 }}>
+                        <IconButton onClick={handleLikeActivity} style={{ padding: 4, marginRight: 8 }}>
+                          {isLikedBy ? <FavoriteIcon /> : <FavoriteEmptyIcon />}
+                        </IconButton>
+                        <div>{data?.likes}</div>
+                      </Row>
+                      <Button variant="contained" color="primary" onClick={() => setShowModal(true)}>Add to routine</Button>
+                    </div>
                   </Card.Body>
                 </>
               )}
@@ -195,10 +222,10 @@ const ActivityView = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
+            <Button onClick={handleClose} style={{ marginRight: 8 }}>
+              Cancel
           </Button>
-            <Button variant="primary" type="submit">
+            <Button type="submit" variant="contained" color="primary">
               Save Changes
           </Button>
           </Modal.Footer>

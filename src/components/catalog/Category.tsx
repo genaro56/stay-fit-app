@@ -3,7 +3,8 @@ import styled from 'styled-components';
 
 export const Category = styled(Card)`
   transition: opacity 1s ease-in-out;
-  max-height: 50%;
+  height:350px;
+  overflow:hidden;
   &:hover {
     top: -2px;
     box-shadow: 0px 22px 80px -30px #657480;
@@ -13,8 +14,10 @@ export const Category = styled(Card)`
   }
   .card-body {
     padding: 0;
+    display:flex;
   }
   img {
     width: 100%;
+    object-fit: cover;
   }
 `;
