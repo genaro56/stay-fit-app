@@ -42,7 +42,6 @@ const ActivityView = () => {
   const { activityId }: any = useParams();
   const user = useCurrentUser();
   const [data, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
-<<<<<<< HEAD
   const [weeklyRoutineData, loadingRoutine, errorRoutine]: DocumentDataHook<any> = useDocumentData(WeeklyRoutinesCollection.doc(user?.routineId))
   const [showModal, setShowModal] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -119,15 +118,6 @@ const ActivityView = () => {
     }
   }, [loading])
   console.log('%c isLikedBy', 'background: #332167; color: #B3D1F6; font-size: 16px', isLikedBy)
-=======
-  const [showModal, setShowModal] = React.useState(false);
-  const {register, errors, handleSubmit} = useForm()
-  const handleClose = () => setShowModal(false);
-  const handleAddActivity = () => {
-    alert('adding activity to weekly routine...')
-
-  };
->>>>>>> 9bf96c37c3d4559fc957e1064b7462521ce25bfb
   return (
     <Container>
       <Row className="section-row">
@@ -188,7 +178,6 @@ const ActivityView = () => {
         <Modal.Header closeButton>
           <Modal.Title>Which day would you like to add to?</Modal.Title>
         </Modal.Header>
-<<<<<<< HEAD
         <Form onSubmit={handleSubmit(handleAddActivity)}>
           <Modal.Body>
             <Form.Group>
@@ -203,13 +192,6 @@ const ActivityView = () => {
                 value={dateValue}
                 type="date"
               />
-=======
-        <Modal.Body>
-          <Form onSubmit={handleSubmit(handleAddActivity)}>
-            <Form.Group>
-              <Form.Label>Day:</Form.Label>
-              <Form.Control ref={register({ required: true })} value={Date()} type="date" />
->>>>>>> 9bf96c37c3d4559fc957e1064b7462521ce25bfb
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
