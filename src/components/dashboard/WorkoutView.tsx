@@ -56,7 +56,9 @@ const WorkoutView = () => {
               <Card.Header>You don't have any activities for today.</Card.Header>
               : (
                 <>
-                  <Card.Title>{currentActivity?.name}</Card.Title>
+                  <Card.Header>
+                    <strong>{currentActivity?.name}</strong>
+                  </Card.Header>
                   <Card.Body>
                     <Button onClick={() => window.location.replace(`/activity/${currentActivity.activityId}`)} >Go to activity</Button>
                   </Card.Body>

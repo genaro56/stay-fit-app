@@ -41,7 +41,7 @@ const CatalogView = () => {
       <Row>
         <Col>
           <Row>
-            <h1>CatalogView</h1>
+            <h1>Choose one of our five categories:</h1>
           </Row>
           <Grid style={{ padding: '16px 0' }}>
             {categories.map((cat: any) => (
