@@ -50,7 +50,7 @@ function Navbar({ color = '#1c2237' }) {
                   className='nav-links'
                   onClick={closeMobileMenu}
                 >
-                  Mi Profile
+                  My Profile
                 </Link>
               </li>
               <li className='nav-item'>
