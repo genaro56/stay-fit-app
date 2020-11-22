@@ -24,13 +24,13 @@ function Footer({ color = '#1c2237', leagueId = '/empty'}) {
             <Link to='/'>Crea tu rutina</Link>
           </div>
           <div className='footer-link-items'>
-            <h3>Secciones</h3>
+            <h3>Sections</h3>
             <Link to={`/`}>Mi perfil</Link>
             <Link to={`/`}>Catálogo</Link>
             <Link to={`/`}>Mi rutina semanal</Link>
           </div>
           <div className='footer-link-items'>
-            <h3>Redes</h3>
+            <h3>Social</h3>
             <a target="_blank" href={`http://instagram.com}`}>Instagram</a>
             <a target="_blank" href={`http://facebook.com}`}>Facebook</a>
             <a target="_blank" href={`http://youtube.com}`}>Youtube</a>

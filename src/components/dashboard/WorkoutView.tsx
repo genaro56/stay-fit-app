@@ -9,7 +9,6 @@ import { useCurrentUser } from '../auth/CurrentUser';
 const StyledWorkoutView = styled.div``;
 
 const WorkoutView = () => {
-  const user = useCurrentUser();
   const [data, loading, error]: any = useCollectionData(
     // WeeklyRoutinesCollection.where('userId', '==', user?.id)
     WeeklyRoutinesCollection.where('userId', '==', 'RxGlhvfXqVMySkZVjOip9SYVn443')
@@ -28,13 +27,13 @@ const WorkoutView = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  const currentDate = moment(new Date()).format('MMM. DD')
+  const currentDate = moment(new Date()).format('MMM DD')
   return (
     <StyledWorkoutView>
       <Row>
         <Col>
           <Row>
-            <h3>Today's activity for: {currentDate}</h3>
+            <h3 style={{ textTransform: 'capitalize' }}>{currentDate}</h3>
           </Row>
         </Col>
       </Row>
@@ -52,7 +51,7 @@ const WorkoutView = () => {
                       width="100%"
                       src={currentActivity?.video_url}
                       frameBorder="0"
-                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                      allow="encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
                   </Card.Body>

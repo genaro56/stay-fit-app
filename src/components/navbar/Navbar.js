@@ -32,7 +32,7 @@ function Navbar({ color = '#1c2237' }) {
                   className='nav-links'
                   onClick={closeMobileMenu}
                 >
-                  Catalogo
+                  Catalog
                 </Link>
               </li>
               <li className='nav-item'>
@@ -41,7 +41,7 @@ function Navbar({ color = '#1c2237' }) {
                   className='nav-links'
                   onClick={closeMobileMenu}
                 >
-                  Rutinas
+                  Routines
                 </Link>
               </li>
               <li className='nav-item'>
@@ -50,7 +50,7 @@ function Navbar({ color = '#1c2237' }) {
                   className='nav-links'
                   onClick={closeMobileMenu}
                 >
-                  Mi Perfil
+                  My Profile
                 </Link>
               </li>
               <li className='nav-item'>
@@ -66,7 +66,7 @@ function Navbar({ color = '#1c2237' }) {
                   <Button
                     variant="outline-light"
                   >
-                    Cerrar sesión
+                   Logout
                     </Button>
                 </Link>
               </li>
