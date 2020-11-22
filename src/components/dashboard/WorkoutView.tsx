@@ -27,21 +27,13 @@ const WorkoutView = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  const currentDate = moment(new Date()).format('MMM DD')
   return (
     <StyledWorkoutView>
-      <Row>
-        <Col>
-          <Row>
-            <h3 style={{ textTransform: 'capitalize' }}>{currentDate}</h3>
-          </Row>
-        </Col>
-      </Row>
       <Row>
         <Col md={12}>
           <Card>
             {!currentActivity ?
-              <Card.Header>You don't have an activity for today :(</Card.Header>
+              <Card.Header>You don't have any activities for today.</Card.Header>
               : (
                 <>
                   <Card.Title>{currentActivity?.name}</Card.Title>

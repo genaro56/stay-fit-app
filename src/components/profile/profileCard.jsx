@@ -36,7 +36,7 @@ export default function ProfileCard(props) {
       <div>
         <Typography variant="h6">{user.name}</Typography>
         <Typography variant="body2" style={{ marginBottom: 8 }}>Miembro desde {moment(user.created).format("DD/MM/YYYY")}</Typography>
-        <Button variant="contained">Editar perfil</Button>
+        <Button variant="contained" color="secondary">Editar perfil</Button>
       </div>
     </Paper>}
   </>

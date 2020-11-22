@@ -10,8 +10,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: 'row',
     display: 'flex',
-    paddingTop: 32,
-    paddingBottom: 32,
+    padding: '32px 0',
     minHeight: '80vh'
   },
   leftColumn: {

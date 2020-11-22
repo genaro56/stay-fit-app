@@ -20,7 +20,23 @@ class SignIn extends React.Component {
     ],
     callbacks: {
       // Avoid redirects after sign-in.
-      signInSuccessWithAuthResult: () => false
+      signInSuccessWithAuthResult: (result) => {
+        if (result.additionalUserInfo.isNewUser) {
+          firebase.firestore().collection("user-data").doc(result.user.uid).set({
+            created: Date.now(),
+            name: result.user.displayName,
+            email: result.user.email
+          }).then(() => {
+            firebase.firestore().collection("weekly-routines").add({
+              userId: result.user.uid
+            }).then((routineSnap) => {
+              firebase.firestore().collection("user-data").doc(result.user.uid).update({
+                routineId: routineSnap.id
+              })
+            })
+          })
+        }
+      }
     }
   };
 
@@ -41,10 +57,10 @@ class SignIn extends React.Component {
       return (
         <>
           <div className="container contentBlock">
-          <video autoPlay muted loop id="myVideo">
-            <source src={VideoUrl} type="video/mp4" />
-          </video>
-            <div className="d-flex justify-content-center h-100" style={{ height: '100vh'}}>
+            <video autoPlay muted loop id="myVideo">
+              <source src={VideoUrl} type="video/mp4" />
+            </video>
+            <div className="d-flex justify-content-center h-100" style={{ height: '100vh' }}>
               <div className="card">
                 <div className="card-header">
                   <div className="d-flex justify-content-end social_icon">
