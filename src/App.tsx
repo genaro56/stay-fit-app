@@ -13,7 +13,8 @@ import ActivitiesList from './components/catalog/ActivitiesList';
 import Profile from './views/ProfileView';
 import CatalogView from './components/catalog/CatalogView';
 import UploadActivity from './components/upload-activity/UploadActivity';
-
+import RoutinesView from './components/routines/RoutinesView';
+        
 function App() {
   const user = useCurrentUser()
   console.log('%c:fuente_de_información: user', 'background: #006579; color: #C2F5FF; font-size: 16px', user)
@@ -44,6 +45,7 @@ function App() {
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/catalog" component={CatalogView} />
             <Route exact path="/upload-activity" component={UploadActivity} />
+            <Route exact path="/routines" component={RoutinesView} />
             <Footer />
           </>
         }

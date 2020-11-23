@@ -34,13 +34,10 @@ const WorkoutView = () => {
     } catch (err) {
       alert('There was an error fetching the activity: ' + err);
     }
-    console.log('%c currentActivity', 'background: #332167; color: #B3D1F6; font-size: 16px', currentActivity)
     setCurrentActivity(currentActivity)
-
   }
   useEffect(() => {
-    if (!loading) {
-      console.log('%c data[0]', 'background: #332167; color: #B3D1F6; font-size: 16px', data)
+    if (!loading && data.activities) {
       const activityInfo = data.activities.find((el: any) => {
         return calculateDay(new Date()).toString() === calculateDay(el.date.toDate()).toString()
       })
