@@ -56,8 +56,8 @@ const ActivityView = () => {
 
   const { activityId }: any = useParams();
   const user = useCurrentUser();
-  const [data, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
-  const [weeklyRoutineData, loadingRoutine, errorRoutine]: DocumentDataHook<any> = useDocumentData(WeeklyRoutinesCollection.doc(user?.routineId))
+  const [activityData, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
+  const [weeklyRoutineData, loadingRoutine, errorRoutine]: DocumentDataHook<any> = useDocumentData(WeeklyRoutinesCollection.doc(user?.routineId || 'default'))
   const [showModal, setShowModal] = useState(false);
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -76,39 +76,56 @@ const ActivityView = () => {
   })
 
   async function handleAddActivity({ date: selectedDate }: { date: any }) {
-    const formatDate = calculateDate(new Date(selectedDate));
-    const indexOfDate = weeklyRoutineData?.activities.findIndex((activity: any) => {
-      return calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString()
-    })
-    const isDatePicked = (indexOfDate !== -1)
-    console.log('%c isDatePicked', 'background: #332167; color: #B3D1F6; font-size: 16px', isDatePicked)
-    if (!isDatePicked && weeklyRoutineData) {
-      const activities = weeklyRoutineData?.activities;
-      activities?.push({
-        date: formatDate,
-        activityId
-      });
 
-      WeeklyRoutinesCollection.doc(user?.routineId).update({
-        activities
-      }).then((res) => {
-        handleSuccess('Activity added to routine successfully')
-        setShowModal(false);
+    const formatDate = calculateDate(new Date(selectedDate));
+    if (weeklyRoutineData) {
+      const indexOfDate = weeklyRoutineData?.activities.findIndex((activity: any) => {
+        return calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString()
       })
-        .catch(function (error: any) {
-          // The document probably doesn't exist.
-          alert("Error updating document: " + error);
+      const isDatePicked = (indexOfDate !== -1)
+      console.log('%c isDatePicked', 'background: #332167; color: #B3D1F6; font-size: 16px', isDatePicked)
+      if (!isDatePicked) {
+        const activities = weeklyRoutineData?.activities;
+        activities?.push({
+          date: formatDate,
+          activityId,
+          name: activityData?.name
         });
+
+        WeeklyRoutinesCollection.doc(user?.routineId).update({
+          activities
+        }).then((res) => {
+          handleSuccess('Activity added to routine successfully')
+          setShowModal(false);
+        })
+          .catch(function (error: any) {
+            // The document probably doesn't exist.
+            alert("Error updating document: " + error);
+          });
+      } else {
+        alert("Cannot pick this date: date is already taken.")
+      }
     } else {
-      alert("Cannot pick this date: date is already taken.")
+      createNewRoutine(formatDate);
     }
   }
 
+  async function createNewRoutine(date: any) {
+    const activities = [{ date, activityId, name: activityData?.name }]
+    const routineRef = await WeeklyRoutinesCollection.add({ activities, userId: user.uid })
+    UserDataCollection.doc(user.uid).update({
+      routineId: routineRef.id
+    }).then((res) => {
+      handleSuccess('Routine created successfully');
+      setShowModal(false);
+    })
+  }
+
   function handleLikeActivity() {
-    if (!loading && data) {
+    if (!loading && activityData) {
       try {
         ActivitiesCollection.doc(activityId).update({
-          likes: isLikedBy ? data?.likes - 1 : data?.likes + 1,
+          likes: isLikedBy ? activityData?.likes - 1 : activityData?.likes + 1,
         })
         if (isLikedBy) {
           var likedActivities = user.likedActivities || []
@@ -142,6 +159,7 @@ const ActivityView = () => {
       const exists = user.likedActivities && !!(user.likedActivities.find((act: any) => act === activityId))
       setIsLikedBy(exists)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading])
   console.log('%c isLikedBy', 'background: #332167; color: #B3D1F6; font-size: 16px', isLikedBy)
   return (
@@ -165,14 +183,14 @@ const ActivityView = () => {
                 <>
                   {success && <Alert variant="success">{successMessage}</Alert>}
                   <Card.Header>
-                    {data?.name}
+                    {activityData?.name}
                   </Card.Header>
                   <Card.Body>
                     <iframe
                       style={{ minHeight: '550px' }}
                       title="Today's routine"
                       width="100%"
-                      src={data?.video_url}
+                      src={activityData?.video_url}
                       frameBorder="1"
                       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -181,7 +199,7 @@ const ActivityView = () => {
                       <Col
                         sm={10}
                       >
-                        <span>{data?.description}</span>
+                        <span>{activityData?.description}</span>
                       </Col>
                     </Row>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -189,7 +207,7 @@ const ActivityView = () => {
                         <IconButton onClick={handleLikeActivity} style={{ padding: 4, marginRight: 8 }}>
                           {isLikedBy ? <FavoriteIcon /> : <FavoriteEmptyIcon />}
                         </IconButton>
-                        <div>{data?.likes}</div>
+                        <div>{activityData?.likes}</div>
                       </Row>
                       <Button variant="contained" color="primary" onClick={() => setShowModal(true)}>Add to routine</Button>
                     </div>

@@ -1712,6 +1712,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
+"@mobiscroll/react@https://npm.mobiscroll.com/@mobiscroll/react-trial/-/react-trial-4.10.7.tgz":
+  version "4.10.7"
+  resolved "https://npm.mobiscroll.com/@mobiscroll/react-trial/-/react-trial-4.10.7.tgz#7dd011e33125a22211c4afe9f8c8c8f242d8e991"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

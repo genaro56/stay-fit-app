@@ -34,13 +34,10 @@ const WorkoutView = () => {
     } catch (err) {
       alert('There was an error fetching the activity: ' + err);
     }
-    console.log('%c currentActivity', 'background: #332167; color: #B3D1F6; font-size: 16px', currentActivity)
     setCurrentActivity(currentActivity)
-
   }
   useEffect(() => {
-    if (!loading) {
-      console.log('%c data[0]', 'background: #332167; color: #B3D1F6; font-size: 16px', data)
+    if (!loading && data.activities) {
       const activityInfo = data.activities.find((el: any) => {
         return calculateDay(new Date()).toString() === calculateDay(el.date.toDate()).toString()
       })
@@ -56,7 +53,9 @@ const WorkoutView = () => {
               <Card.Header>You don't have any activities for today.</Card.Header>
               : (
                 <>
-                  <Card.Title>{currentActivity?.name}</Card.Title>
+                  <Card.Header>
+                    <strong>{currentActivity?.name}</strong>
+                  </Card.Header>
                   <Card.Body>
                     <Button onClick={() => window.location.replace(`/activity/${currentActivity.activityId}`)} >Go to activity</Button>
                   </Card.Body>
