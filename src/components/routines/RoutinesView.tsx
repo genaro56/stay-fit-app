@@ -17,6 +17,7 @@ const CalendarContainer = styled.div`
 const Grid = styled.div`
   display: grid;
   grid-template-rows: auto;
+  border-radius: 5px;
 `;
 
 const GridRow = styled(Row)`
@@ -26,8 +27,13 @@ const GridRow = styled(Row)`
   .box {
     border: 1px solid #cccc;
     padding: 10px;
-    .emtpy-warning {
-      text-style: italic;
+    background: #42424385;
+    .box-date {
+      font-weight: 400;
+    }
+    .empty-warning {
+      opacity: 0.5;
+      font-style: italic;
     }
   }
 
@@ -57,12 +63,11 @@ const RoutinesView = () => {
         entryDate.setMonth(currentMonth); entryDate.setDate(dayCounter);
         const roundedDate = calculateDay(entryDate);
         const activityEntry = activitiesMap.get(roundedDate.toString()) || {};
-        console.log('%c activityEntry', 'background: #332167; color: #B3D1F6; font-size: 16px', activityEntry)
         const entry = {
           date: roundedDate,
           component: () => (
             <div className="box">
-              <span>{moment(roundedDate).locale('en').format('MMM. DD')}</span>
+              <span className="box-date">{moment(roundedDate).locale('en').format('MMM. DD')}</span>
               <Card>
                 <Card.Body>
                   {activityEntry.name ? <Link to={`/activity/${activityEntry?.activityId}`}>{activityEntry?.name}</Link>
