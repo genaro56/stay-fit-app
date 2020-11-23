@@ -78,7 +78,7 @@ const ActivityView = () => {
   async function handleAddActivity({ date: selectedDate }: { date: any }) {
 
     const formatDate = calculateDate(new Date(selectedDate));
-    if (weeklyRoutineData) {
+    if (user.routineId && weeklyRoutineData) {
       const indexOfDate = weeklyRoutineData?.activities.findIndex((activity: any) => {
         return calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString()
       })
