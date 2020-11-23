@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { auth } from "../../firebase";
-import {UserDataCollection} from "../../firestoreCollections";
+import { UserDataCollection } from "../../firestoreCollections";
 
 let memoedUser = null
 
@@ -15,7 +15,7 @@ export function useCurrentUser() {
           .then((ref) => {
             const data = ref.data()
             memoedUser = { ...user, ...data }
-            setCurrentUser({ ...user, ...data })
+            setCurrentUser({ ...user, ...data, uid: user?.uid })
           })
       } else {
         memoedUser = null
@@ -23,6 +23,6 @@ export function useCurrentUser() {
       }
     })
   }, [])
-  
+
   return currentUser
 }
