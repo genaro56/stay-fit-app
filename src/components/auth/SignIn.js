@@ -56,22 +56,11 @@ class SignIn extends React.Component {
     if (!this.state.isSignedIn) {
       return (
         <>
-          <div className="container contentBlock">
+          <div className="container">
             <video autoPlay muted loop id="myVideo">
               <source src={VideoUrl} type="video/mp4" />
             </video>
-            <div className="d-flex justify-content-center h-100" style={{ height: '100vh' }}>
-              <div className="card">
-                <div className="card-header">
-                  <div className="d-flex justify-content-end social_icon">
-                    <span><i className="fab fa-facebook-square"></i></span>
-                    <span><i className="fab fa-google-plus-square"></i></span>
-                    <span><i className="fab fa-twitter-square"></i></span>
-                  </div>
-                </div>
-                <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} />
-              </div>
-            </div>
+            <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} />
           </div>
         </>
       );

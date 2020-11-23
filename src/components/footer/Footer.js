@@ -25,9 +25,9 @@ function Footer({ color = '#1c2237', leagueId = '/empty'}) {
           </div>
           <div className='footer-link-items'>
             <h3>Sections</h3>
-            <Link to={`/`}>Mi perfil</Link>
-            <Link to={`/`}>Catálogo</Link>
-            <Link to={`/`}>Mi rutina semanal</Link>
+            <Link to={`/`}>My Profile</Link>
+            <Link to={`/`}>Catalog</Link>
+            <Link to={`/`}>Weekly routine</Link>
           </div>
           <div className='footer-link-items'>
             <h3>Social</h3>
