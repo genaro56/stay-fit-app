@@ -23,17 +23,18 @@ const Grid = styled.div`
 const GridRow = styled(Row)`
   display: grid;
   grid-template-columns: repeat(7, 14.28%);
-
+  .card-body {
+    background: #42424385;
+  }
   .box {
     border: 1px solid #cccc;
     padding: 10px;
-    background: #42424385;
     .box-date {
       font-weight: 400;
     }
     .empty-warning {
-      opacity: 0.5;
       font-style: italic;
+      color: white;
     }
   }
 
