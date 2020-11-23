@@ -1,8 +1,7 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { useCurrentUser } from './components/auth/CurrentUser';
-import { Alert, Media } from 'react-bootstrap';
 import SignIn from './components/auth/SignIn';
 import Footer from './components/footer/Footer';
 import NoAuthNavbar from './components/navbar/NoAuthNavbar';
@@ -13,7 +12,9 @@ import ActivityView from './components/activity/ActivityView';
 import ActivitiesList from './components/catalog/ActivitiesList';
 import Profile from './views/ProfileView';
 import CatalogView from './components/catalog/CatalogView';
-
+import UploadActivity from './components/upload-activity/UploadActivity';
+import RoutinesView from './components/routines/RoutinesView';
+        
 function App() {
   const user = useCurrentUser()
   console.log('%c:fuente_de_información: user', 'background: #006579; color: #C2F5FF; font-size: 16px', user)
@@ -32,7 +33,7 @@ function App() {
         {
           /**
             * Aqui ya tienen sesion iniciada pero tecnicamente no son admins por que apenas 
-            * van a crear su liga o por que van a inscribir a su equipo
+            * van a crear su rutina.
             */
           user &&
           <>
@@ -43,7 +44,8 @@ function App() {
             <Route exact path="/activity-list/:categoryId" component={ActivitiesList} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/catalog" component={CatalogView} />
-            {/* <Route exact path="/about" component={AboutUs} /> */}
+            <Route exact path="/upload-activity" component={UploadActivity} />
+            <Route exact path="/routines" component={RoutinesView} />
             <Footer />
           </>
         }

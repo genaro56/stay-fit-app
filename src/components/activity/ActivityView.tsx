@@ -1,5 +1,5 @@
 import React, { Component, useCallback, useEffect, useState } from 'react';
-import { Row, Col, Card, Spinner, Container, Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Row, Col, Card, Spinner, Modal, Form, Alert } from 'react-bootstrap';
 import { CollectionDataHook, DocumentDataHook, useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -7,6 +7,19 @@ import styled from 'styled-components';
 import { ActivitiesCollection, UserDataCollection, WeeklyRoutinesCollection } from '../../firestoreCollections';
 import { useCurrentUser } from '../auth/CurrentUser';
 import './Activity.css';
+
+// UI
+
+import { Container, makeStyles, Button, IconButton } from '@material-ui/core';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteEmptyIcon from '@material-ui/icons/FavoriteBorder';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    minHeight: '80vh',
+    padding: '32px 0'
+  },
+}))
 
 interface IActivity {
   video_url: string,
@@ -39,10 +52,12 @@ const calculateDate = (date: Date) => {
 }
 
 const ActivityView = () => {
+  const classes = useStyles()
+
   const { activityId }: any = useParams();
   const user = useCurrentUser();
-  const [data, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
-  const [weeklyRoutineData, loadingRoutine, errorRoutine]: DocumentDataHook<any> = useDocumentData(WeeklyRoutinesCollection.doc(user?.routineId))
+  const [activityData, loading, error]: DocumentDataHook<IActivity> = useDocumentData(ActivitiesCollection.doc(activityId))
+  const [weeklyRoutineData, loadingRoutine, errorRoutine]: DocumentDataHook<any> = useDocumentData(WeeklyRoutinesCollection.doc(user?.routineId || 'default'))
   const [showModal, setShowModal] = useState(false);
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -61,50 +76,78 @@ const ActivityView = () => {
   })
 
   async function handleAddActivity({ date: selectedDate }: { date: any }) {
-    const formatDate = calculateDate(new Date(selectedDate));
-    const indexOfDate = weeklyRoutineData?.activities.findIndex((activity: any) => {
-      return calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString()
-    })
-    const isDatePicked = (indexOfDate !== -1)
-    console.log('%c isDatePicked', 'background: #332167; color: #B3D1F6; font-size: 16px', isDatePicked)
-    if (!isDatePicked && weeklyRoutineData) {
-      const activities = weeklyRoutineData?.activities;
-      activities?.push({
-        date: formatDate,
-        activityId
-      });
 
-      WeeklyRoutinesCollection.doc(user?.routineId).update({
-        activities
-      }).then((res) => {
-        handleSuccess('Activity added to routine successfully')
-        setShowModal(false);
+    const formatDate = calculateDate(new Date(selectedDate));
+    if (weeklyRoutineData) {
+      const indexOfDate = weeklyRoutineData?.activities.findIndex((activity: any) => {
+        return calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString()
       })
-        .catch(function (error: any) {
-          // The document probably doesn't exist.
-          alert("Error updating document: " + error);
+      const isDatePicked = (indexOfDate !== -1)
+      console.log('%c isDatePicked', 'background: #332167; color: #B3D1F6; font-size: 16px', isDatePicked)
+      if (!isDatePicked) {
+        const activities = weeklyRoutineData?.activities;
+        activities?.push({
+          date: formatDate,
+          activityId,
+          name: activityData?.name
         });
+
+        WeeklyRoutinesCollection.doc(user?.routineId).update({
+          activities
+        }).then((res) => {
+          handleSuccess('Activity added to routine successfully')
+          setShowModal(false);
+        })
+          .catch(function (error: any) {
+            // The document probably doesn't exist.
+            alert("Error updating document: " + error);
+          });
+      } else {
+        alert("Cannot pick this date: date is already taken.")
+      }
     } else {
-      alert("Cannot pick this date: date is already taken.")
+      createNewRoutine(formatDate);
     }
   }
 
+  async function createNewRoutine(date: any) {
+    const activities = [{ date, activityId, name: activityData?.name }]
+    const routineRef = await WeeklyRoutinesCollection.add({ activities, userId: user.uid })
+    UserDataCollection.doc(user.uid).update({
+      routineId: routineRef.id
+    }).then((res) => {
+      handleSuccess('Routine created successfully');
+      setShowModal(false);
+    })
+  }
+
   function handleLikeActivity() {
-    if (!loading && data) {
+    if (!loading && activityData) {
       try {
         ActivitiesCollection.doc(activityId).update({
-          likes: data?.likes + 1,
-        }).then(() => {
-          handleSuccess('Like sent.')
+          likes: isLikedBy ? activityData?.likes - 1 : activityData?.likes + 1,
         })
-        if (!isLikedBy) {
+        if (isLikedBy) {
+          var likedActivities = user.likedActivities || []
+          likedActivities = likedActivities.filter((act: any) => {
+            console.log("ACTIVITY ID", act, activityId)
+            return act !== activityId
+          })
+
+          console.log("ACTIVITIES", likedActivities)
+          UserDataCollection.doc(user.uid).update({
+            likedActivities
+          })
+          user.likedActivities = likedActivities
+        } else {
           const likedActivities = user.likedActivities || []
           likedActivities.push(activityId)
           UserDataCollection.doc(user.uid).update({
             likedActivities
           })
-          setIsLikedBy(true)
+          user.likedActivities = likedActivities
         }
+        setIsLikedBy(!isLikedBy)
       } catch (err) {
         alert("Error creating operation: " + error);
       }
@@ -113,13 +156,14 @@ const ActivityView = () => {
 
   useEffect(() => {
     if (!loading) {
-      const exists = !!(user.likedActivities.find((act: any) => act === activityId))
+      const exists = user.likedActivities && !!(user.likedActivities.find((act: any) => act === activityId))
       setIsLikedBy(exists)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading])
   console.log('%c isLikedBy', 'background: #332167; color: #B3D1F6; font-size: 16px', isLikedBy)
   return (
-    <Container>
+    <Container maxWidth="lg" component="main" className={classes.container}>
       <Row className="section-row">
         {/* <div className="section light-bg"> */}
         <Col md={12}>
@@ -139,33 +183,34 @@ const ActivityView = () => {
                 <>
                   {success && <Alert variant="success">{successMessage}</Alert>}
                   <Card.Header>
-                    {data?.name}
+                    {activityData?.name}
                   </Card.Header>
                   <Card.Body>
                     <iframe
-                      style={{ minHeight: '350px' }}
+                      style={{ minHeight: '550px' }}
                       title="Today's routine"
                       width="100%"
-                      src={data?.video_url}
+                      src={activityData?.video_url}
                       frameBorder="1"
                       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
                     <Row className="section-content" style={{ margin: '20px 0', display: 'flex', flex: '1 1 0' }}>
                       <Col
-                        // style={{ width: '80%' }}
                         sm={10}
                       >
-                        <span>{data?.description}</span>
-                      </Col>
-                      <Col sm={2}>
-                        <Row>
-                          <Button disabled={isLikedBy} onClick={handleLikeActivity} >{isLikedBy ? 'Liked ': 'Like this activity'}</Button>
-                          <div>{data?.likes}</div>
-                        </Row>
+                        <span>{activityData?.description}</span>
                       </Col>
                     </Row>
-                    <Button onClick={() => setShowModal(true)}>Add to routine</Button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                      <Row style={{ alignItems: 'center', paddingLeft: 16 }}>
+                        <IconButton onClick={handleLikeActivity} style={{ padding: 4, marginRight: 8 }}>
+                          {isLikedBy ? <FavoriteIcon /> : <FavoriteEmptyIcon />}
+                        </IconButton>
+                        <div>{activityData?.likes}</div>
+                      </Row>
+                      <Button variant="contained" color="primary" onClick={() => setShowModal(true)}>Add to routine</Button>
+                    </div>
                   </Card.Body>
                 </>
               )}
@@ -195,10 +240,10 @@ const ActivityView = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
+            <Button onClick={handleClose} style={{ marginRight: 8 }}>
+              Cancel
           </Button>
-            <Button variant="primary" type="submit">
+            <Button type="submit" variant="contained" color="primary">
               Save Changes
           </Button>
           </Modal.Footer>
