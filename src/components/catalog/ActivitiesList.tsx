@@ -19,6 +19,15 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     marginBottom: 8,
     width: '100%'
+  },
+  row: {
+    display: 'flex',
+    width: '100%',
+    alignItems:'center'
+  },
+  img: {
+    height: 100,
+    width:150
   }
 }))
 
@@ -55,10 +64,8 @@ const ActivitiesList = () => {
       <ActivityList style={{ padding: '32px 0' }}>
         {activities.map((act: any) => (
           <Card onClick={() => window.location.replace(`/activity/${act.id}`)} className={classes.card}>
-            <Card.Header>
-              <Col sm={2}>
-                <img alt="Activity preview" src={act.thumbnail || DefaultImage} />
-              </Col>
+            <Card.Header className={classes.row}>
+              <img alt="Activity preview" src={act.thumbnail || DefaultImage} className={classes.img} />
               <Col sm={10}>
                 <h2>{act.name}</h2>
                 <span>{act.description}</span>

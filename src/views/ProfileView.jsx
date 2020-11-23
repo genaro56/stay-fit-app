@@ -1,10 +1,14 @@
 import React from 'react';
 
+// Components
+
+import ProfileCard from '../components/profile/profileCard';
+import LogList from '../components/profile/logList';
+import LikedActivitiesCard from '../components/profile/likedActivitiesCard';
+
 // UI
 
 import { Container, makeStyles } from '@material-ui/core';
-import ProfileCard from '../components/profile/profileCard';
-import LogList from '../components/profile/logList';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,6 +35,7 @@ export default function Profile(props) {
     <Container maxWidth="lg" className={classes.container}>
       <div className={classes.leftColumn}>
         <ProfileCard />
+        <LikedActivitiesCard />
       </div>
       <div className={classes.rightColumn}>
         <LogList />
