@@ -26,6 +26,7 @@ interface IActivity {
   name: string,
   description: string,
   likes: number,
+  views: number,
 }
 
 function formIsValid(errors: any) {
@@ -69,21 +70,19 @@ const ActivityView = () => {
     setSuccessMessage(msg);
   }
   const handleClose = () => setShowModal(false);
-  const { register, handleSubmit, getValues, setValue } = useForm({
+  const { register, handleSubmit, errors } = useForm({
     defaultValues: {
       date: new Date().toDateString(),
     }
   })
 
-  async function handleAddActivity({ date: selectedDate }: { date: any }) {
-
-    const formatDate = calculateDate(new Date(selectedDate));
+  async function handleAddActivity({ date: selectedDate }: { date: string }) {
+    const formatDate = new Date(selectedDate + ':00:00:00')
     if (user.routineId && weeklyRoutineData) {
       const indexOfDate = weeklyRoutineData?.activities.findIndex((activity: any) => {
-        return calculateDate(activity.date.toDate()).toDateString() === formatDate.toDateString()
+        return calculateDate(activity.date.toDate()).toDateString() === calculateDate(formatDate).toDateString()
       })
       const isDatePicked = (indexOfDate !== -1)
-      console.log('%c isDatePicked', 'background: #332167; color: #B3D1F6; font-size: 16px', isDatePicked)
       if (!isDatePicked) {
         const activities = weeklyRoutineData?.activities;
         activities?.push({
@@ -154,13 +153,21 @@ const ActivityView = () => {
     }
   }
 
+  const updateView = () => {
+    ActivitiesCollection.doc(activityId).update({
+      views: activityData?.views ? (activityData?.views + 1) : 1
+    })
+  }
+
   useEffect(() => {
     if (!loading) {
       const exists = user.likedActivities && !!(user.likedActivities.find((act: any) => act === activityId))
+      updateView()
       setIsLikedBy(exists)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading])
+
   console.log('%c isLikedBy', 'background: #332167; color: #B3D1F6; font-size: 16px', isLikedBy)
   return (
     <Container maxWidth="lg" component="main" className={classes.container}>
@@ -228,9 +235,7 @@ const ActivityView = () => {
             <Form.Group>
               <Form.Label>Day:</Form.Label>
               <Form.Control
-                ref={register({
-                  required: true
-                })}
+                ref={register({ required: true })}
                 onChange={(e: any) => setDateValue(e.target.value)}
                 name="date"
                 min={restrictDate()}
@@ -243,7 +248,7 @@ const ActivityView = () => {
             <Button onClick={handleClose} style={{ marginRight: 8 }}>
               Cancel
           </Button>
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" disabled={!formIsValid(errors)} variant="contained" color="primary">
               Save Changes
           </Button>
           </Modal.Footer>

@@ -32,7 +32,7 @@ function App() {
         }
         {
           /**
-            * Aqui ya tienen sesion iniciada pero tecnicamente no son admins por que apenas 
+            * Aqui ya tienen sesion iniciada porque apenas 
             * van a crear su rutina.
             */
           user &&

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import firebase from 'firebase';
-import moment from 'moment';
 
 // UI
 
-import { Paper, Typography, makeStyles, Button } from '@material-ui/core';
+import { Paper, Typography, makeStyles } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import { useCurrentUser } from '../auth/CurrentUser';
 import WorkoutView from './WorkoutView';
 import './Main.css'
@@ -6,7 +7,7 @@ import img1 from '../../images/pushups.jpg';
 import img2 from '../../images/pilates.jpg';
 import img3 from '../../images/abs.jpg';
 import img4 from '../../images/yoga.jpg';
-import { Carousel, Row } from 'react-bootstrap';
+import { Button, Card, Carousel, Row } from 'react-bootstrap';
 import moment from 'moment'
 
 // UI
@@ -60,7 +61,6 @@ const useStyles = makeStyles((theme) => ({
 
 const MainDashboard = () => {
   const classes = useStyles()
-
   const currentUser = useCurrentUser()
   const imgs = [img1, img2, img3, img4]
   return (
