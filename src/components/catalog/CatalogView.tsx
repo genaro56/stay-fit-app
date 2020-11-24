@@ -47,7 +47,7 @@ const CatalogView = () => {
             {categories.map((cat: any) => (
               <div style={{ padding: 4 }}>
                 <Category
-                  onClick={() => window.location.replace(`/activity-list/${cat.id}`)}
+                  onClick={() => window.location.replace(`/activity-list/${cat.id}/`)}
                   id={cat.name}
                   style={{ cursor: 'pointer' }}
                 >

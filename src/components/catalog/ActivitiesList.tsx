@@ -37,7 +37,9 @@ const ActivityList = styled(Row)`
 const ActivitiesList = () => {
   const classes = useStyles()
 
-  const { categoryId }: any = useParams();
+  const params: any = useParams();
+  console.log('%c params', 'background: #332167; color: #B3D1F6; font-size: 16px', params)
+  const { categoryId} = params;
   console.log('%c categoryId', 'background: #332167; color: #B3D1F6; font-size: 16px', categoryId)
   const [data, loading, error] = useCollectionData(
     ActivitiesCollection.where('category', '==', categoryId), { idField: 'id' }
