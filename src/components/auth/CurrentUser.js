@@ -15,7 +15,7 @@ export function useCurrentUser() {
           .then((ref) => {
             const data = ref.data()
             memoedUser = { ...user, ...data }
-            setCurrentUser({ ...user, ...data })
+            setCurrentUser({ ...user, ...data, uid: user?.uid })
           })
       } else {
         memoedUser = null

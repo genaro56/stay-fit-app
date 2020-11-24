@@ -9,7 +9,8 @@ import { Avatar, Paper, Typography, makeStyles, Button } from '@material-ui/core
 const useStyles = makeStyles((theme) => ({
   paperContainer: {
     padding: 16,
-    display: 'flex'
+    display: 'flex',
+    marginBottom: 8
   },
   avatar: {
     width: 100,

@@ -49,14 +49,14 @@ const UploadActivity = () => {
     // Activity
   }
   return (
-    <Container fluid>
+    <Container fluid style={{ paddingBottom: '10px' }}>
       <Row>
         <Col md={8}>
           <h1 className="mb-3">Upload your own activity to the catalog.</h1>
           <Form style={{ width: '' }} onSubmit={handleSubmit(handleFormValues)}>
             <Form.Group>
               <Form.Label>Activity name</Form.Label>
-              <Form.Control placeholder="Ej. Liga premier" name="name" ref={register({ required: true })} />
+              <Form.Control placeholder="Ex. My exercise workout" name="name" ref={register({ required: true })} />
             </Form.Group>
             <Form.Group>
               <Form.Label>Category</Form.Label>

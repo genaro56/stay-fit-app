@@ -9,6 +9,8 @@ import styled from 'styled-components';
 import { Map } from 'typescript';
 import { WeeklyRoutinesCollection } from '../../firestoreCollections';
 import { useCurrentUser } from '../auth/CurrentUser';
+import { Checkbox } from '@material-ui/core';
+import firebase from 'firebase';
 
 const CalendarContainer = styled.div`
   padding: 50px;
@@ -24,7 +26,12 @@ const GridRow = styled(Row)`
   display: grid;
   grid-template-columns: repeat(7, 14.28%);
   .card-body {
-    background: #42424385;
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    min-height:58px;
   }
   .box {
     border: 1px solid #cccc;
@@ -73,8 +80,24 @@ const RoutinesView = () => {
                 <Card.Body>
                   {activityEntry.name ? <Link to={`/activity/${activityEntry?.activityId}`}>{activityEntry?.name}</Link>
                     :
-                    <span className="empty-warning">No activity for today</span>
+                    <span className="empty-warning" style={{ color: 'black' }}>No activity for today</span>
                   }
+                  {activityEntry.name && <Checkbox color="primary" disabled={activityEntry.checked} defaultChecked={activityEntry.checked} onChange={(_, checked) => {
+                    routinesList.activities[activityEntry.id] = {
+                      ...activityEntry,
+                      checked,
+                    }
+                    firebase.firestore().collection("weekly-routines").doc(user?.routineId).update({ activities: routinesList.activities })
+
+                    if (checked) {
+                      var log = user.log || []
+                      log.push({
+                        date: Date.now(),
+                        title: "Realizaste un ejercicio de " + activityEntry.name
+                      })
+                      firebase.firestore().collection("user-data").doc(user.uid).update({ log })
+                    }
+                  }} />}
                 </Card.Body>
               </Card>
             </div>)
@@ -91,7 +114,7 @@ const RoutinesView = () => {
     if (!loading) {
       const routinesMap = new Map()
       if (routinesList.activities)
-        routinesList.activities.forEach((item: any) => { routinesMap.set(item.date.toDate().toString(), item) })
+        routinesList.activities.forEach((item: any, index: any) => { routinesMap.set(item.date.toDate().toString(), { ...item, id: index }) })
       console.log('%c routinesMap', 'background: #332167; color: #B3D1F6; font-size: 16px', routinesMap)
       generateDates(routinesMap);
     }
