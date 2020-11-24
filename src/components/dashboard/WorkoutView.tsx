@@ -11,7 +11,7 @@ const StyledWorkoutView = styled.div``;
 const WorkoutView = () => {
   const user = useCurrentUser();
   const [data, loading, error]: any = useDocumentData(
-    WeeklyRoutinesCollection.doc(user?.routineId)
+    WeeklyRoutinesCollection.doc(user?.routineId || 'default')
   );
   const [currentActivity, setCurrentActivity] = useState<any>(null);
   const calculateDay = (date: Date) => {
@@ -37,7 +37,7 @@ const WorkoutView = () => {
     setCurrentActivity(currentActivity)
   }
   useEffect(() => {
-    if (!loading && data.activities) {
+    if (!loading && data?.activities) {
       const activityInfo = data.activities.find((el: any) => {
         return calculateDay(new Date()).toString() === calculateDay(el.date.toDate()).toString()
       })

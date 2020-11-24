@@ -24,5 +24,16 @@ export function useCurrentUser() {
     })
   }, [])
 
+  useEffect(() => {
+    const unsubscribe = currentUser &&
+      UserDataCollection.doc(currentUser?.uid)
+        .onSnapshot((snapshot) => {
+          const data = snapshot.data()
+          memoedUser = { ...currentUser, ...data }
+          setCurrentUser({ ...currentUser, ...data })
+        });
+    return unsubscribe
+  }, []);
+
   return currentUser
 }
