@@ -66,7 +66,7 @@ const ActivitiesList = () => {
         </Col>
         <Col sm="4">
           <span>Sort by:</span>
-          <Form.Control as="select">
+          <Form.Control as="select" onChange={(e: any) => setSortType(e.target.value)}>
             <option value="likes">Most liked</option>
             <option value="views">Most popular</option>
           </Form.Control>
@@ -84,6 +84,7 @@ const ActivitiesList = () => {
               </Col>
             </Card.Header>
             <Card.Body>
+              <span style={{ marginRight: '10px' }}>likes: {act.likes}</span>
               <span>views: {act.views}</span>
             </Card.Body>
           </Card>

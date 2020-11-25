@@ -16,7 +16,7 @@ import { useState } from 'react';
 
 const CalendarContainer = styled.div`
   padding: 50px;
-  background: #6e7d8b;
+  background: white;
 `;
 
 const Grid = styled.div`
