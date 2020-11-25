@@ -2,18 +2,8 @@ import React from 'react';
 import './Footer.css';
 import { Link } from 'react-router-dom';
 import { GiWeightLiftingUp } from 'react-icons/gi';
-import {
-  FaFacebook,
-  FaInstagram,
-  FaYoutube,
-  FaTwitter,
-  FaLinkedin,
-  FaAutoprefixer
-} from 'react-icons/fa';
 
-// TODO: Cambiar links
-function Footer({ color = '#1c2237', leagueId = '/empty'}) {
-  // const [data, loading] = useDocumentData(LeagueInfoCollection.doc(leagueId))
+function Footer({ color = '#1c2237', leagueId = '/empty' }) {
 
   return (
     <div className='footer-container' style={{ backgroundColor: color }}>
@@ -21,13 +11,13 @@ function Footer({ color = '#1c2237', leagueId = '/empty'}) {
         <div className='footer-link-wrapper'>
           <div className='footer-link-items'>
             <h3>Stay-fit</h3>
-            <Link to='/'>Crea tu rutina</Link>
+            <Link to='/'>Create you routine!</Link>
           </div>
           <div className='footer-link-items'>
             <h3>Sections</h3>
-            <Link to={`/`}>My Profile</Link>
-            <Link to={`/`}>Catalog</Link>
-            <Link to={`/`}>Weekly routine</Link>
+            <Link to={`/profile`}>My Profile</Link>
+            <Link to={`/catalog`}>Catalog</Link>
+            <Link to={`/routines`}>Weekly routine</Link>
           </div>
           <div className='footer-link-items'>
             <h3>Social</h3>

@@ -1,6 +1,7 @@
-import { Error } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { Alert, Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { Error } from '@material-ui/icons';
+import { Container} from '@material-ui/core';
+import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { ActivitiesCollection } from '../../firestoreCollections';
@@ -49,7 +50,7 @@ const UploadActivity = () => {
     // Activity
   }
   return (
-    <Container fluid style={{ paddingBottom: '10px' }}>
+    <Container maxWidth="md" style={{ padding: '32px' }}>
       <Row>
         <Col md={8}>
           <h1 className="mb-3">Upload your own activity to the catalog.</h1>

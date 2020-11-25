@@ -2,11 +2,19 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row } from 'react-bootstrap';
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ActivitiesCollection, WeeklyRoutinesCollection } from '../../firestoreCollections';
 import { useCurrentUser } from '../auth/CurrentUser';
 
 const StyledWorkoutView = styled.div``;
+
+const CardContainer = styled(Card)`
+  background: rgb(48 67 134);
+  color: white;
+  height: 100%;
+`;
+
 
 const WorkoutView = () => {
   const user = useCurrentUser();
@@ -46,24 +54,41 @@ const WorkoutView = () => {
   }, [data, loading])
   return (
     <StyledWorkoutView>
-      <Row>
-        <Col md={12}>
-          <Card>
-            {!currentActivity ?
-              <Card.Header>You don't have any activities for today.</Card.Header>
-              : (
+      <Col lg="12">
+        <Row>
+          <Col md={6}>
+            <CardContainer>
+              {!currentActivity ?
                 <>
-                  <Card.Header>
-                    <strong>{currentActivity?.name}</strong>
-                  </Card.Header>
-                  <Card.Body>
-                    <Button onClick={() => window.location.replace(`/activity/${currentActivity.activityId}`)} >Go to activity</Button>
-                  </Card.Body>
+                  <Card.Header>You don't have any activities for today.</Card.Header>
+                  <Card.Body>Schedule your activities from the catalog today!</Card.Body>
                 </>
-              )}
-          </Card>
-        </Col>
-      </Row>
+                : (
+                  <>
+                    <Card.Header>
+                      <h5>Today's activity: </h5><strong>{currentActivity?.name}</strong>
+                    </Card.Header>
+                    <Card.Footer>
+                      <Button variant="secondary" onClick={() => window.location.replace(`/activity/${currentActivity.activityId}`)} >Go to activity</Button>
+                    </Card.Footer>
+                  </>
+                )}
+            </CardContainer>
+          </Col>
+          <Col md={6}>
+            <CardContainer>
+              <Card.Body>
+                <h5><strong>Create your own activities!</strong></h5>
+              </Card.Body>
+              <Card.Footer>
+                <Link to="/upload-activity">
+                  <Button variant="secondary">Click here</Button>
+                </Link>
+              </Card.Footer>
+            </CardContainer>
+          </Col>
+        </Row>
+      </Col>
     </StyledWorkoutView>
   )
 };
